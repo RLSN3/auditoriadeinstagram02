@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Auditoria Estratégica de Instagram | RLSN</title>
+</head>
+<body>
+<div id="status">Carregando auditoria…</div>
+<script>
+(async function(){
+  const url='https://raw.githubusercontent.com/RLSN3/auditoriadeinstagram02/main/Auditoria_Estrategica_Interativa_RLSN.html';
+  try {
+    const response=await fetch(url);
+    if(!response.ok) throw new Error('HTTP '+response.status);
+    const html=await response.text();
+    document.open(); document.write(html); document.close();
+  } catch(error) {
+    document.getElementById('status').innerHTML='Não foi possível carregar a auditoria. <a href="https://github.com/RLSN3/auditoriadeinstagram02/blob/main/Auditoria_Estrategica_Interativa_RLSN.html">Abrir o arquivo no GitHub</a>.';
+  }
+})();
+</script>
+</body>
+</html>
