@@ -2,23 +2,698 @@
 <html lang="pt-BR">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Auditoria Estratégica de Instagram | RLSN</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>[hidden]{display:none!important}html,body{margin:0}</style>
+<title>Auditoria Estratégica de Instagram</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap">
+<style>
+/* Conceito: palco preto e branco que alterna a cada capítulo. Cada troca entra como uma cortina horizontal, e o último slide termina em um botão para rlsn.com.br. */
+:root{
+  --black:#000;
+  --white:#fff;
+  --grey-w:#5c5c5c;
+  --grey-b:#a6a6a6;
+  --f:'Archivo','Helvetica Neue',Helvetica,Arial,sans-serif;
+  --gut:clamp(20px,6vw,116px);
+  --top:calc(clamp(64px,9vh,104px) + env(safe-area-inset-top,0px));
+  --bot:calc(clamp(84px,12vh,116px) + env(safe-area-inset-bottom,0px));
+  --fs:clamp(15px,min(1.4vw,2.5vh),24px);
+  --fs-s:clamp(12px,min(1vw,1.9vh),17px);
+  --fs-t:clamp(26px,min(4.3vw,8vh),84px);
+  --fs-tw:clamp(26px,min(4.4vw,7.4vh),88px);
+  --ease:cubic-bezier(.77,0,.18,1);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--black);color:var(--white);font-family:var(--f);font-size:var(--fs);line-height:1.5;overflow:hidden;-webkit-font-smoothing:antialiased;-webkit-tap-highlight-color:transparent}
+button,a{font-family:inherit}
+
+#deck{position:fixed;inset:0;background:var(--black)}
+.slide{position:absolute;inset:0;overflow-x:hidden;overflow-y:auto;padding:var(--top) var(--gut) var(--bot);visibility:hidden;background:var(--bg);color:var(--fg);scrollbar-width:thin}
+.slide.on{visibility:visible}
+.slide[data-tone="dark"]{--bg:#000;--fg:#fff;--mut:var(--grey-b);--line:rgba(255,255,255,.3);--soft:rgba(255,255,255,.08);scrollbar-color:#555 #000}
+.slide[data-tone="light"]{--bg:#fff;--fg:#000;--mut:var(--grey-w);--line:rgba(0,0,0,.3);--soft:rgba(0,0,0,.05);scrollbar-color:#aaa #fff}
+.wrap{min-height:100%;display:flex;flex-direction:column;gap:clamp(16px,2.8vh,40px)}
+.cols{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);gap:clamp(24px,5vw,96px);align-items:start}
+.cols > *{min-width:0}
+.stack{display:flex;flex-direction:column;gap:clamp(14px,2.6vh,32px)}
+.grow{margin-top:auto}
+
+.eyebrow{font-size:var(--fs-s);letter-spacing:.28em;text-transform:uppercase;font-weight:500;margin:0}
+.t{font-weight:800;font-stretch:88%;text-transform:uppercase;letter-spacing:-.025em;line-height:.98;font-size:var(--fs-t);margin:0;text-wrap:balance;overflow-wrap:break-word}
+.t.wide{font-size:var(--fs-tw)}
+.lead{font-size:calc(var(--fs)*1.25);font-weight:300;line-height:1.4;margin:0;max-width:34em}
+.lead b{font-weight:700}
+.body{margin:0;max-width:36em}
+.mut{color:var(--mut)}
+.small{font-size:var(--fs-s);line-height:1.5;color:var(--mut);margin:0}
+
+/* botões base */
+.pick{appearance:none;background:none;border:0;color:inherit;font:inherit;text-align:left;cursor:pointer;padding:0;width:100%;display:block}
+.pick:focus-visible,.acc-head:focus-visible,.btn:focus-visible,.cbtn:focus-visible,.arrow:focus-visible,.seg:focus-visible,.idx-card:focus-visible{outline:2px solid currentColor;outline-offset:4px}
+.btn{display:inline-flex;align-items:center;gap:1em;appearance:none;cursor:pointer;text-decoration:none;font-size:var(--fs-s);font-weight:700;letter-spacing:.16em;text-transform:uppercase;padding:1.15em 1.7em;border:1px solid var(--fg);background:var(--fg);color:var(--bg);transition:background .3s,color .3s}
+.btn .arr{display:inline-block;transition:transform .35s var(--ease)}
+.btn:hover .arr{transform:translateX(.45em)}
+.btn:hover{background:var(--bg);color:var(--fg)}
+.btn.ghost{background:transparent;color:var(--fg)}
+.btn.ghost:hover{background:var(--fg);color:var(--bg)}
+
+/* chrome */
+.chrome{position:fixed;left:0;right:0;z-index:10;display:flex;align-items:center;justify-content:space-between;padding-inline:var(--gut);color:#fff;mix-blend-mode:difference;pointer-events:none}
+.chrome > *{pointer-events:auto}
+.chrome.top{top:0;padding-top:calc(clamp(18px,3vh,32px) + env(safe-area-inset-top,0px))}
+.chrome.bot{bottom:0;padding-bottom:calc(clamp(18px,3vh,32px) + env(safe-area-inset-bottom,0px));gap:clamp(12px,2vw,32px)}
+.brand{font-weight:800;letter-spacing:.32em;font-size:calc(var(--fs)*1.1)}
+.tools{display:flex;gap:10px}
+.cbtn{appearance:none;background:none;border:1px solid currentColor;color:inherit;font-size:var(--fs-s);letter-spacing:.16em;text-transform:uppercase;padding:.7em 1.1em;cursor:pointer;font-weight:500}
+.cbtn:hover{background:#fff;color:#000}
+.count{font-size:var(--fs-s);letter-spacing:.14em;font-variant-numeric:tabular-nums;min-width:5.2em;font-weight:500}
+.segs{display:flex;gap:6px;flex:1;max-width:560px;margin-inline:auto}
+.seg{flex:1;height:24px;background:none;border:0;padding:0;cursor:pointer;position:relative;color:inherit}
+.seg::after{content:'';position:absolute;left:0;right:0;top:11px;height:2px;background:currentColor;opacity:.28;transition:opacity .3s,height .3s,top .3s}
+.seg.past::after{opacity:.65}
+.seg[aria-current="true"]::after{opacity:1;height:4px;top:10px}
+.seg:hover::after{opacity:1}
+.arrows{display:flex;gap:8px}
+.arrow{appearance:none;background:none;border:1px solid currentColor;color:inherit;width:44px;height:44px;cursor:pointer;font-size:18px;line-height:1;display:grid;place-items:center;transition:background .25s,color .25s}
+.arrow:hover:not(:disabled){background:#fff;color:#000}
+.arrow:disabled{opacity:.28;cursor:default}
+
+/* índice */
+#index{position:fixed;inset:0;z-index:30;background:#000;color:#fff;overflow-y:auto;padding:var(--top) var(--gut) var(--bot)}
+#index .head{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:clamp(18px,4vh,48px)}
+.idx-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:0;background:#000}
+.idx-card{appearance:none;border:0;box-shadow:0 0 0 .5px rgba(255,255,255,.35);background:#000;color:#fff;text-align:left;padding:clamp(16px,2.6vh,28px);cursor:pointer;display:flex;flex-direction:column;gap:clamp(18px,5vh,56px);min-height:clamp(120px,22vh,200px);transition:background .25s,color .25s;font:inherit}
+.idx-card:hover,.idx-card[aria-current="true"]{background:#fff;color:#000}
+.idx-card .n{font-size:var(--fs-s);letter-spacing:.2em;font-variant-numeric:tabular-nums}
+.idx-card .tt{font-weight:700;font-size:calc(var(--fs)*1.1);line-height:1.2;margin-top:auto}
+
+/* acordeão */
+.acc-row{border-top:1px solid var(--line)}
+.acc-row:last-child{border-bottom:1px solid var(--line)}
+.acc-head{appearance:none;background:none;border:0;color:inherit;font:inherit;width:100%;text-align:left;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:clamp(10px,1.6vh,22px) 0;cursor:pointer;font-size:calc(var(--fs)*1.2);font-weight:500;transition:padding-left .35s var(--ease)}
+.acc-head:hover{padding-left:10px}
+.pm{flex:none;width:18px;height:18px;position:relative}
+.pm::before,.pm::after{content:'';position:absolute;background:currentColor;left:0;right:0;top:8px;height:2px;transition:transform .35s var(--ease)}
+.pm::after{transform:rotate(90deg)}
+.acc-row[data-open] .pm::after{transform:rotate(0)}
+.acc-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s var(--ease)}
+.acc-row[data-open] .acc-body{grid-template-rows:1fr}
+.acc-body > div{overflow:hidden;min-height:0}
+.acc-body p{margin:0;padding:0 0 clamp(12px,2vh,22px);color:var(--mut);max-width:32em}
+.acc-row[data-open] .acc-head{font-weight:700}
+
+/* capa */
+.cover{justify-content:flex-end}
+.cover-title{font-weight:800;font-stretch:88%;text-transform:uppercase;letter-spacing:-.03em;line-height:.95;font-size:clamp(34px,min(8.6vw,12.5vh),176px);margin:0 0 .1em}
+.who{font-size:clamp(20px,min(2.8vw,5vh),52px);font-weight:300;letter-spacing:.12em;text-transform:uppercase}
+.handle{font-size:calc(var(--fs)*1.05);color:var(--mut);letter-spacing:.1em;margin-top:.4em}
+.cover-foot{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(20px,4vw,80px);align-items:end;border-top:1px solid var(--line);padding-top:clamp(16px,3vh,32px);margin-top:clamp(12px,3vh,40px)}
+.cover-foot .sub{margin:0 0 1.2em;max-width:26em;font-size:calc(var(--fs)*1.15);line-height:1.4}
+.sig{font-size:var(--fs-s);letter-spacing:.2em;text-transform:uppercase;margin:0}
+.hint{margin:.8em 0 0}
+
+/* S3: duo */
+.duo{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,2.4vw,40px)}
+.duo-card{border-top:4px solid var(--line);padding-top:clamp(14px,2.2vh,24px);opacity:.5;transition:opacity .35s,border-color .35s}
+.duo-card:hover{opacity:.85}
+.duo-card.is-on{opacity:1;border-top-color:var(--fg)}
+.lab{font-size:var(--fs-s);letter-spacing:.2em;text-transform:uppercase;color:var(--mut);display:block;margin-bottom:.9em}
+.duo-card .q{display:block;font-size:clamp(20px,min(2.9vw,5vh),48px);font-weight:300;line-height:1.18;letter-spacing:-.01em}
+.duo-card.is-on .q{font-weight:700}
+.panel{min-height:4.5em}
+.final{font-size:clamp(18px,min(2.3vw,4vh),36px);font-weight:300;line-height:1.3;margin:0;max-width:40em}
+.final b{font-weight:700}
+
+/* S4: nome */
+.opt{border-top:1px solid var(--line);padding:clamp(12px,2vh,22px) 0;display:flex;justify-content:space-between;align-items:center;gap:16px;transition:padding-left .35s var(--ease)}
+.opt:hover{padding-left:10px}
+.optlist .opt-wrap:last-child .opt{border-bottom:1px solid var(--line)}
+.opt .nm{display:block;font-size:calc(var(--fs)*1.25);font-weight:400;color:var(--mut);transition:color .3s}
+.opt.is-on .nm{font-weight:700;color:var(--fg)}
+.dot{flex:none;width:18px;height:18px;border:2px solid currentColor;border-radius:50%;position:relative}
+.dot::after{content:'';position:absolute;inset:3px;border-radius:50%;background:currentColor;transform:scale(0);transition:transform .3s var(--ease)}
+.is-on .dot::after{transform:scale(1)}
+.profile{border:1px solid var(--line);padding:clamp(16px,3vh,32px);background:var(--soft);min-height:8.5em}
+.profile .pname{font-size:clamp(20px,min(2.6vw,4.6vh),44px);font-weight:700;letter-spacing:-.01em;line-height:1.2;margin:0}
+.warn{border-left:3px solid var(--fg);padding-left:14px;margin:0}
+
+/* S5: dimensões */
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line)}
+.tile{background:var(--bg);padding:clamp(14px,2.6vh,30px);min-height:clamp(70px,13vh,130px);display:flex;align-items:flex-end;font-size:calc(var(--fs)*1.2);font-weight:700;line-height:1.15;transition:background .3s,color .3s}
+.tile:hover{background:var(--soft)}
+.tile.is-on{background:var(--fg);color:var(--bg)}
+.detail h3,.panel h3{font-size:calc(var(--fs)*1.7);font-weight:700;margin:0 0 .35em;letter-spacing:-.01em;line-height:1.1}
+.detail p,.panel p{margin:0;max-width:30em}
+
+/* S6: jornada */
+.track{height:2px;background:var(--line);position:relative}
+.track .fill{position:absolute;left:0;top:0;bottom:0;background:var(--fg);width:25%;transition:width .7s var(--ease)}
+.steps{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(10px,2vw,32px);margin-top:-7px}
+.step{opacity:.5;transition:opacity .35s}
+.step:hover{opacity:.85}
+.step.is-on,.step.done{opacity:1}
+.step .mk{display:block;width:12px;height:12px;border-radius:50%;background:var(--bg);border:2px solid var(--fg);margin-bottom:clamp(10px,2vh,20px);transition:background .35s}
+.step.is-on .mk,.step.done .mk{background:var(--fg)}
+.step .nn{display:block;font-size:var(--fs-s);letter-spacing:.2em;color:var(--mut);margin-bottom:.4em;font-variant-numeric:tabular-nums}
+.step .nm{display:block;font-size:calc(var(--fs)*1.6);font-weight:700;letter-spacing:-.01em}
+.playbar{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+
+/* S7: semanas */
+.weeks{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:clamp(8px,1.4vw,20px)}
+.week{border-top:4px solid var(--line);padding-top:clamp(12px,2vh,20px);opacity:.5;transition:opacity .35s,border-color .35s}
+.week:hover{opacity:.85}
+.week.is-on{opacity:1;border-top-color:var(--fg)}
+.week .nm{display:block;font-size:calc(var(--fs)*1.5);font-weight:700;letter-spacing:-.01em}
+.week .dd{display:block;font-size:var(--fs-s);color:var(--mut);letter-spacing:.14em;text-transform:uppercase;margin-top:.3em}
+.tags{display:flex;flex-wrap:wrap;gap:8px;margin-top:1.1em}
+.tag{border:1px solid var(--line);padding:.45em .9em;font-size:var(--fs-s);letter-spacing:.1em;text-transform:uppercase}
+
+/* S10 */
+.cta{font-weight:800;font-stretch:88%;text-transform:uppercase;letter-spacing:-.03em;line-height:.98;font-size:clamp(28px,min(5.6vw,9.4vh),104px);margin:0;text-wrap:balance;overflow-wrap:break-word}
+.finale .btn{font-size:calc(var(--fs)*.95);padding:1.4em 2.2em}
+.addr{font-size:var(--fs-s);letter-spacing:.2em;color:var(--mut);text-transform:uppercase}
+.actions{display:flex;flex-wrap:wrap;gap:16px;align-items:center}
+
+@media (max-width:900px){
+  .cols{grid-template-columns:minmax(0,1fr)}
+  .cover-foot{grid-template-columns:minmax(0,1fr)}
+  .duo,.weeks{grid-template-columns:minmax(0,1fr)}
+  .steps{grid-template-columns:repeat(2,minmax(0,1fr));margin-top:0;row-gap:24px}
+  .track{display:none}
+  .tiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .t,.t.wide{font-size:clamp(26px,8.2vw,56px)}
+}
+@media (max-width:640px){
+  .hide-s{display:none}
+  .arrow{width:40px;height:40px}
+  .count{min-width:4.6em}
+  .segs{gap:3px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:.01ms !important}
+}
+</style>
+
 </head>
 <body>
-<div id="status">Carregando auditoria…</div>
+<div id="deck" role="region" aria-roledescription="apresentação" aria-label="Auditoria Estratégica de Instagram">
+
+<!-- 1 CAPA -->
+<section class="slide on" data-tone="dark" data-title="Capa" aria-label="Capa">
+  <div class="wrap cover">
+    <h1 class="cover-title" data-r>Auditoria<br>Estratégica<br>de Instagram</h1>
+    <div data-r>
+      <div class="who">Dra. Luanda Carla</div>
+      <div class="handle">@draluandacarla_hof</div>
+    </div>
+    <div class="cover-foot" data-r>
+      <div>
+        <p class="sig">RLSN | Design que posiciona. Estratégia que vende.</p>
+        <p class="small hint">Use as setas do teclado ou deslize. Toque nos blocos para explorar cada ideia.</p>
+      </div>
+      <div>
+        <p class="sub">Do conteúdo à construção de uma marca pessoal que gera confiança e oportunidades.</p>
+        <button class="btn" type="button" data-next>Começar <span class="arr">→</span></button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2 BASE -->
+<section class="slide" data-tone="light" data-title="Uma base que merece ser potencializada" aria-label="Uma base que merece ser potencializada">
+  <div class="wrap">
+    <p class="eyebrow" data-r>O que já existe de positivo</p>
+    <div class="cols">
+      <div class="stack">
+        <h2 class="t" data-r>Uma base que merece ser potencializada.</h2>
+        <p class="lead grow" data-r><b>A estratégia não precisa começar do zero.</b> Precisa organizar e potencializar o que já existe.</p>
+      </div>
+      <div data-r>
+        <div data-acc>
+          <div class="acc-row" data-open>
+            <button class="acc-head" type="button" aria-expanded="true"><span>Audiência de referência (~15,1 mil seguidores*)</span><span class="pm" aria-hidden="true"></span></button>
+            <div class="acc-body"><div><p>Uma audiência já formada reduz o esforço de começar. O desafio passa a ser orientar essa atenção para confiança e conversa.</p></div></div>
+          </div>
+          <div class="acc-row">
+            <button class="acc-head" type="button" aria-expanded="false"><span>Volume de conteúdo publicado</span><span class="pm" aria-hidden="true"></span></button>
+            <div class="acc-body"><div><p>Há matéria-prima para reorganizar, reaproveitar e dar nova direção, sem recomeçar do zero.</p></div></div>
+          </div>
+          <div class="acc-row">
+            <button class="acc-head" type="button" aria-expanded="false"><span>Presença visual consistente da profissional</span><span class="pm" aria-hidden="true"></span></button>
+            <div class="acc-body"><div><p>A profissional é reconhecível. Isso facilita construir uma marca pessoal que as pacientes lembram.</p></div></div>
+          </div>
+          <div class="acc-row">
+            <button class="acc-head" type="button" aria-expanded="false"><span>Resultados de procedimentos</span><span class="pm" aria-hidden="true"></span></button>
+            <div class="acc-body"><div><p>Sustentam a percepção de qualidade. Ganham ainda mais força quando vêm com contexto e explicação.</p></div></div>
+          </div>
+          <div class="acc-row">
+            <button class="acc-head" type="button" aria-expanded="false"><span>Destaques organizados por procedimento</span><span class="pm" aria-hidden="true"></span></button>
+            <div class="acc-body"><div><p>O perfil já oferece um caminho de consulta por tema, que pode funcionar como porta de entrada para o contato.</p></div></div>
+          </div>
+          <div class="acc-row">
+            <button class="acc-head" type="button" aria-expanded="false"><span>Estética visual sofisticada</span><span class="pm" aria-hidden="true"></span></button>
+            <div class="acc-body"><div><p>A aparência cuidada combina com um posicionamento premium e deve ser mantida como referência.</p></div></div>
+          </div>
+          <div class="acc-row">
+            <button class="acc-head" type="button" aria-expanded="false"><span>Registros de transformação</span><span class="pm" aria-hidden="true"></span></button>
+            <div class="acc-body"><div><p>Mostram a evolução das pacientes e podem vir acompanhados de relatos autorizados, que ajudam a compreender a experiência de atendimento.</p></div></div>
+          </div>
+        </div>
+        <p class="small" style="margin-top:1em">*Dado de referência do momento da análise. Não indica desempenho atual do perfil.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 DESAFIO -->
+<section class="slide" data-tone="dark" data-title="Comunicar o valor" aria-label="O principal desafio estratégico">
+  <div class="wrap">
+    <p class="eyebrow" data-r>O principal desafio estratégico</p>
+    <h2 class="t wide" data-r>Não basta mostrar o procedimento.<br>É preciso comunicar o valor.</h2>
+    <div class="duo" data-choice="s3" data-r>
+      <button class="pick duo-card" type="button" data-to="a" aria-pressed="true"><span class="lab">O que o perfil já mostra</span><span class="q">“Eu faço estética.”</span></button>
+      <button class="pick duo-card" type="button" data-to="b" aria-pressed="false"><span class="lab">O que pode ganhar mais espaço</span><span class="q">“Eu entendo o que você deseja melhorar e tenho um método para chegar lá.”</span></button>
+    </div>
+    <div class="panel" data-r>
+      <p class="body" data-for="s3" data-id="a">Resultados, procedimentos e conteúdos visualmente bonitos sustentam a percepção de qualidade. Essa é uma força que já existe no perfil.</p>
+      <p class="body" data-for="s3" data-id="b">Conteúdos que fazem a paciente se reconhecer, entender suas possibilidades e confiar na profissional. É aqui que a atenção vira intenção de contato.</p>
+    </div>
+    <p class="final grow" data-r>A paciente não busca apenas um procedimento. <b>Ela busca uma solução que faça sentido para ela.</b></p>
+  </div>
+</section>
+
+<!-- 4 NOME -->
+<section class="slide" data-tone="light" data-title="Campo de nome" aria-label="Otimização do campo de nome">
+  <div class="wrap">
+    <p class="eyebrow" data-r>Otimização do campo de nome</p>
+    <div class="cols">
+      <div class="stack">
+        <h2 class="t" data-r>Ser encontrada também faz parte da estratégia.</h2>
+        <p class="lead grow" data-r>A escolha deve equilibrar clareza para o público, posicionamento profissional e facilidade de compreensão.</p>
+      </div>
+      <div class="stack" data-r>
+        <div class="optlist" data-choice="s4">
+          <div class="opt-wrap"><button class="pick opt" type="button" data-to="a" aria-pressed="false"><span><span class="lab" style="margin-bottom:.3em">Nome atual</span><span class="nm">Dra. Luanda Carla | Estética | HOF</span></span><span class="dot" aria-hidden="true"></span></button></div>
+          <div class="opt-wrap"><button class="pick opt" type="button" data-to="b" aria-pressed="false"><span><span class="lab" style="margin-bottom:.3em">Sugestão principal</span><span class="nm">Dra. Luanda Carla | Enfermeira Esteta</span></span><span class="dot" aria-hidden="true"></span></button></div>
+          <div class="opt-wrap"><button class="pick opt" type="button" data-to="c" aria-pressed="false"><span><span class="lab" style="margin-bottom:.3em">Alternativa</span><span class="nm">Dra. Luanda Carla | Estética Facial</span></span><span class="dot" aria-hidden="true"></span></button></div>
+        </div>
+        <div class="profile" aria-live="polite">
+          <span class="lab">Como o nome aparece no perfil</span>
+          <p class="pname" data-for="s4" data-id="a">Dra. Luanda Carla | Estética | HOF</p>
+          <p class="pname" data-for="s4" data-id="b">Dra. Luanda Carla | Enfermeira Esteta</p>
+          <p class="pname" data-for="s4" data-id="c">Dra. Luanda Carla | Estética Facial</p>
+          <p class="small" style="margin-top:.6em">@draluandacarla_hof</p>
+        </div>
+        <p class="small warn" data-for="s4" data-id="b">“Enfermeira Esteta” só deve ser utilizada se corresponder à formação da profissional.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 DIMENSÕES -->
+<section class="slide" data-tone="dark" data-title="Seis dimensões" aria-label="Seis dimensões para comunicar com mais intenção">
+  <div class="wrap">
+    <p class="eyebrow" data-r>Da demonstração à estratégia</p>
+    <div class="cols">
+      <div class="stack">
+        <h2 class="t" data-r>Seis dimensões para comunicar com mais intenção.</h2>
+        <div class="detail panel grow" data-r aria-live="polite">
+          <div data-for="s5" data-id="a"><h3>Identificação</h3><p>Conteúdos que dialogam com as necessidades, os desejos e as inseguranças da paciente, para que ela se reconheça no perfil.</p></div>
+          <div data-for="s5" data-id="b"><h3>Educação</h3><p>Esclarecimento de dúvidas sobre os procedimentos, para decisões mais conscientes.</p></div>
+          <div data-for="s5" data-id="c"><h3>Autoridade</h3><p>Demonstração de conhecimento, segurança e responsabilidade profissional.</p></div>
+          <div data-for="s5" data-id="d"><h3>Prova contextualizada</h3><p>Resultados apresentados com contexto, para além da imagem, ajudando a entender o caminho até eles.</p></div>
+          <div data-for="s5" data-id="e"><h3>Relacionamento</h3><p>A dimensão humana da profissional, sem perder elegância e posicionamento.</p></div>
+          <div data-for="s5" data-id="f"><h3>Direcionamento</h3><p>Um caminho claro para o contato e o agendamento em cada etapa da comunicação.</p></div>
+        </div>
+      </div>
+      <div class="tiles" data-choice="s5" data-r>
+        <button class="pick tile" type="button" data-to="a" aria-pressed="true">Identificação</button>
+        <button class="pick tile" type="button" data-to="b" aria-pressed="false">Educação</button>
+        <button class="pick tile" type="button" data-to="c" aria-pressed="false">Autoridade</button>
+        <button class="pick tile" type="button" data-to="d" aria-pressed="false">Prova contextualizada</button>
+        <button class="pick tile" type="button" data-to="e" aria-pressed="false">Relacionamento</button>
+        <button class="pick tile" type="button" data-to="f" aria-pressed="false">Direcionamento</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 JORNADA -->
+<section class="slide" data-tone="light" data-title="A jornada do público" aria-label="Do primeiro contato ao agendamento">
+  <div class="wrap">
+    <p class="eyebrow" data-r>A jornada do público</p>
+    <h2 class="t wide" data-r>Do primeiro contato ao agendamento.</h2>
+    <div data-r>
+      <div class="track" aria-hidden="true"><div class="fill" id="jfill"></div></div>
+      <div class="steps" data-choice="s6" id="jsteps">
+        <button class="pick step" type="button" data-to="a" aria-pressed="true"><span class="mk"></span><span class="nn">01</span><span class="nm">Descoberta</span></button>
+        <button class="pick step" type="button" data-to="b" aria-pressed="false"><span class="mk"></span><span class="nn">02</span><span class="nm">Identificação</span></button>
+        <button class="pick step" type="button" data-to="c" aria-pressed="false"><span class="mk"></span><span class="nn">03</span><span class="nm">Confiança</span></button>
+        <button class="pick step" type="button" data-to="d" aria-pressed="false"><span class="mk"></span><span class="nn">04</span><span class="nm">Ação</span></button>
+      </div>
+    </div>
+    <div class="panel" data-r aria-live="polite">
+      <div data-for="s6" data-id="a"><h3>A pessoa conhece o perfil.</h3><p>Chega por meio dos conteúdos. O papel aqui é chamar atenção e apresentar a profissional com clareza.</p></div>
+      <div data-for="s6" data-id="b"><h3>Ela se reconhece.</h3><p>Percebe dúvidas, desejos e situações ligadas à própria realidade. O conteúdo faz a pessoa pensar: isso é comigo.</p></div>
+      <div data-for="s6" data-id="c"><h3>Ela passa a confiar.</h3><p>Encontra informações, demonstrações de conhecimento e sinais de profissionalismo que apoiam a decisão.</p></div>
+      <div data-for="s6" data-id="d"><h3>Ela sabe como agir.</h3><p>Compreende os serviços e encontra um caminho claro para entrar em contato.</p></div>
+    </div>
+    <div class="playbar">
+      <button class="btn ghost" type="button" id="jplay" aria-pressed="false"><span id="jplaytxt">Reproduzir jornada</span> <span class="arr">→</span></button>
+    </div>
+    <p class="final grow" data-r>Cada conteúdo precisa cumprir um papel nessa jornada, em vez de existir apenas para preencher o calendário.</p>
+  </div>
+</section>
+
+<!-- 7 30 DIAS -->
+<section class="slide" data-tone="dark" data-title="Os primeiros 30 dias" aria-label="Direção para os próximos 30 dias">
+  <div class="wrap">
+    <p class="eyebrow" data-r>Direção para os próximos 30 dias</p>
+    <h2 class="t wide" data-r>Uma direção estratégica para o primeiro mês.</h2>
+    <div class="weeks" data-choice="s7" data-r>
+      <button class="pick week" type="button" data-to="a" aria-pressed="true"><span class="nm">Semana 1</span><span class="dd">Dias 1 a 7</span></button>
+      <button class="pick week" type="button" data-to="b" aria-pressed="false"><span class="nm">Semana 2</span><span class="dd">Dias 8 a 14</span></button>
+      <button class="pick week" type="button" data-to="c" aria-pressed="false"><span class="nm">Semana 3</span><span class="dd">Dias 15 a 21</span></button>
+      <button class="pick week" type="button" data-to="d" aria-pressed="false"><span class="nm">Semana 4</span><span class="dd">Dias 22 a 30</span></button>
+    </div>
+    <div class="panel" data-r aria-live="polite">
+      <div data-for="s7" data-id="a"><h3>Organizar a base</h3><p>Alinhar nome, bio, destaques e linha de conteúdo ao posicionamento desejado.</p><div class="tags"><span class="tag">Nome e bio</span><span class="tag">Destaques</span><span class="tag">Linha de conteúdo</span></div></div>
+      <div data-for="s7" data-id="b"><h3>Aproximar</h3><p>Priorizar conteúdos de identificação e educação, que dialoguem com as dúvidas da paciente.</p><div class="tags"><span class="tag">Identificação</span><span class="tag">Educação</span></div></div>
+      <div data-for="s7" data-id="c"><h3>Fortalecer</h3><p>Dar mais espaço à autoridade e às provas contextualizadas.</p><div class="tags"><span class="tag">Autoridade</span><span class="tag">Prova contextualizada</span></div></div>
+      <div data-for="s7" data-id="d"><h3>Direcionar</h3><p>Reforçar o relacionamento e o convite claro ao contato e ao agendamento.</p><div class="tags"><span class="tag">Relacionamento</span><span class="tag">Direcionamento</span></div></div>
+    </div>
+    <p class="small grow" data-r>Uma direção, não um roteiro. O detalhamento é construído em conjunto com a profissional, ao longo da parceria.</p>
+  </div>
+</section>
+
+<!-- 8 SOLUÇÃO -->
+<section class="slide" data-tone="light" data-title="A solução RLSN" aria-label="A solução RLSN">
+  <div class="wrap">
+    <p class="eyebrow" data-r>A solução RLSN</p>
+    <div class="cols">
+      <div class="stack">
+        <h2 class="t" data-r>Estratégia, conteúdo e execução na mesma direção.</h2>
+        <p class="lead grow" data-r>Mais do que produzir publicações isoladas, a proposta é construir uma presença digital coerente, reconhecível e estrategicamente orientada.</p>
+      </div>
+      <div data-r>
+        <div data-acc>
+          <div class="acc-row" data-open>
+            <button class="acc-head" type="button" aria-expanded="true"><span>Gestão de redes sociais</span><span class="pm" aria-hidden="true"></span></button>
+            <div class="acc-body"><div><p>Planejamento e organização da comunicação para manter consistência e alinhamento com o posicionamento desejado.</p></div></div>
+          </div>
+          <div class="acc-row">
+            <button class="acc-head" type="button" aria-expanded="false"><span>Captação e edição de vídeos</span><span class="pm" aria-hidden="true"></span></button>
+            <div class="acc-body"><div><p>Materiais audiovisuais pensados para comunicar com clareza, valorizar a profissional e gerar conexão com o público.</p></div></div>
+          </div>
+          <div class="acc-row">
+            <button class="acc-head" type="button" aria-expanded="false"><span>Direção de conteúdo</span><span class="pm" aria-hidden="true"></span></button>
+            <div class="acc-body"><div><p>Definição de temas, abordagens e objetivos de comunicação de acordo com a estratégia da marca.</p></div></div>
+          </div>
+          <div class="acc-row">
+            <button class="acc-head" type="button" aria-expanded="false"><span>Consistência de marca</span><span class="pm" aria-hidden="true"></span></button>
+            <div class="acc-body"><div><p>Cuidado com identidade visual, linguagem e percepção transmitida em cada ponto de contato.</p></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 9 VALOR -->
+<section class="slide" data-tone="dark" data-title="O valor da parceria" aria-label="O valor da parceria">
+  <div class="wrap">
+    <p class="eyebrow" data-r>O valor da parceria</p>
+    <div class="cols">
+      <div class="stack">
+        <h2 class="t" data-r>Sua presença digital merece uma estratégia à altura da sua marca.</h2>
+        <p class="body grow" data-r>O objetivo não é apenas conquistar mais seguidores, e sim ampliar a capacidade do perfil de transformar atenção em confiança, conversas e oportunidades de agendamento.</p>
+      </div>
+      <div data-r>
+        <div data-acc>
+          <div class="acc-row" data-open>
+            <button class="acc-head" type="button" aria-expanded="true"><span>Comunicação mais consistente</span><span class="pm" aria-hidden="true"></span></button>
+            <div class="acc-body"><div><p>Linguagem e visual seguem a mesma direção em todos os pontos de contato.</p></div></div>
+          </div>
+          <div class="acc-row">
+            <button class="acc-head" type="button" aria-expanded="false"><span>Posicionamento mais claro</span><span class="pm" aria-hidden="true"></span></button>
+            <div class="acc-body"><div><p>O público entende quem é a profissional, o que ela faz e como ela cuida.</p></div></div>
+          </div>
+          <div class="acc-row">
+            <button class="acc-head" type="button" aria-expanded="false"><span>Conteúdos com objetivos definidos</span><span class="pm" aria-hidden="true"></span></button>
+            <div class="acc-body"><div><p>Cada publicação cumpre um papel na jornada, em vez de apenas preencher o calendário.</p></div></div>
+          </div>
+          <div class="acc-row">
+            <button class="acc-head" type="button" aria-expanded="false"><span>Produção audiovisual alinhada à marca</span><span class="pm" aria-hidden="true"></span></button>
+            <div class="acc-body"><div><p>Vídeos que reforçam o posicionamento e a naturalidade da profissional.</p></div></div>
+          </div>
+          <div class="acc-row">
+            <button class="acc-head" type="button" aria-expanded="false"><span>Jornada de contato mais bem orientada</span><span class="pm" aria-hidden="true"></span></button>
+            <div class="acc-body"><div><p>A paciente encontra, sem esforço, o caminho para pedir informações e agendar.</p></div></div>
+          </div>
+        </div>
+        <p class="small" style="margin-top:1em">Objetivos estratégicos da parceria. Não constituem garantia de resultados.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 PRÓXIMO PASSO -->
+<section class="slide" data-tone="dark" data-title="Próximo passo" aria-label="Próximo passo">
+  <div class="wrap finale">
+    <p class="eyebrow" data-r>Próximo passo</p>
+    <h2 class="lead" style="font-size:calc(var(--fs)*1.6);max-width:none" data-r>Transformar estratégia em presença.</h2>
+    <p class="body mut" data-r>O perfil já possui elementos importantes para fortalecer sua comunicação. O próximo passo é conectá-los em uma estratégia consistente de posicionamento, conteúdo e produção.</p>
+    <h2 class="cta grow" data-r>Vamos construir o próximo capítulo da sua marca?</h2>
+    <p class="body mut" data-r>Conheça a proposta de gestão de redes sociais e captação e edição de vídeos da RLSN.</p>
+    <div class="actions" data-r>
+      <a class="btn" id="cta-link" href="https://rlsn.com.br/" target="_blank" rel="noopener noreferrer">Conhecer a RLSN <span class="arr">→</span></a>
+      <button class="btn ghost" type="button" data-goto="0">Rever do início</button>
+      <span class="addr">rlsn.com.br</span>
+    </div>
+    <p class="sig" data-r style="margin-top:clamp(8px,2vh,24px)">RLSN | Design que posiciona. Estratégia que vende.</p>
+  </div>
+</section>
+
+</div>
+
+<div class="chrome top">
+  <span class="brand">RLSN</span>
+  <div class="tools">
+    <button class="cbtn" type="button" id="btn-index" aria-haspopup="dialog">Índice</button>
+    <button class="cbtn hide-s" type="button" id="btn-full" hidden>Tela cheia</button>
+  </div>
+</div>
+
+<div class="chrome bot">
+  <span class="count" id="count" aria-live="polite">01 / 10</span>
+  <div class="segs" id="segs"></div>
+  <div class="arrows">
+    <button class="arrow" type="button" id="prev" aria-label="Slide anterior">←</button>
+    <button class="arrow" type="button" id="next" aria-label="Próximo slide">→</button>
+  </div>
+</div>
+
+<div id="index" role="dialog" aria-modal="true" aria-label="Índice da apresentação" hidden>
+  <div class="head">
+    <span class="eyebrow">Índice</span>
+    <button class="cbtn" type="button" id="idx-close">Fechar</button>
+  </div>
+  <div class="idx-grid" id="idx-grid"></div>
+</div>
+
 <script>
-(async function(){
-  const url='https://raw.githubusercontent.com/RLSN3/auditoriadeinstagram02/main/Auditoria_Estrategica_Interativa_RLSN.html';
-  try {
-    const response=await fetch(url);
-    if(!response.ok) throw new Error('HTTP '+response.status);
-    const html=await response.text();
-    document.open(); document.write(html); document.close();
-  } catch(error) {
-    document.getElementById('status').innerHTML='Não foi possível carregar a auditoria. <a href="https://github.com/RLSN3/auditoriadeinstagram02/blob/main/Auditoria_Estrategica_Interativa_RLSN.html">Abrir o arquivo no GitHub</a>.';
+(function(){
+  var slides=[].slice.call(document.querySelectorAll('.slide'));
+  var total=slides.length, cur=0, busy=false;
+  var reduce=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var countEl=document.getElementById('count');
+  var segsEl=document.getElementById('segs');
+  var prevB=document.getElementById('prev'), nextB=document.getElementById('next');
+  var idx=document.getElementById('index'), idxGrid=document.getElementById('idx-grid');
+  var idxBtn=document.getElementById('btn-index');
+  function pad(n){return (n<10?'0':'')+n;}
+
+  /* segmentos e índice */
+  var segs=[], cards=[];
+  slides.forEach(function(s,i){
+    var title=s.getAttribute('data-title')||('Slide '+(i+1));
+    var b=document.createElement('button');
+    b.type='button'; b.className='seg';
+    b.setAttribute('aria-label','Ir para o slide '+(i+1)+': '+title);
+    b.title=title;
+    b.addEventListener('click',function(){show(i);});
+    segsEl.appendChild(b); segs.push(b);
+    var c=document.createElement('button');
+    c.type='button'; c.className='idx-card';
+    c.innerHTML='<span class="n">'+pad(i+1)+'</span><span class="tt"></span>';
+    c.querySelector('.tt').textContent=title;
+    c.addEventListener('click',function(){closeIndex(false);show(i);});
+    idxGrid.appendChild(c); cards.push(c);
+    if(i!==0){s.inert=true;s.setAttribute('aria-hidden','true');}
+  });
+
+  function update(){
+    countEl.textContent=pad(cur+1)+' / '+pad(total);
+    segs.forEach(function(b,i){
+      b.classList.toggle('past',i<cur);
+      if(i===cur) b.setAttribute('aria-current','true'); else b.removeAttribute('aria-current');
+    });
+    cards.forEach(function(c,i){ if(i===cur) c.setAttribute('aria-current','true'); else c.removeAttribute('aria-current'); });
+    prevB.disabled=cur===0; nextB.disabled=cur===total-1;
   }
+
+  function reveal(el){
+    if(reduce||!el.animate) return;
+    var items=el.querySelectorAll('[data-r]');
+    [].forEach.call(items,function(it,i){
+      it.animate([{opacity:0,transform:'translateY(28px)'},{opacity:1,transform:'none'}],
+        {duration:700,delay:300+i*80,easing:'cubic-bezier(.2,.7,.2,1)',fill:'backwards'});
+    });
+  }
+
+  function show(n){
+    if(n<0||n>=total||n===cur||busy) return;
+    stopJourney();
+    var dir=n>cur?1:-1, from=slides[cur], to=slides[n];
+    to.inert=false; to.removeAttribute('aria-hidden');
+    to.classList.add('on'); to.scrollTop=0;
+    to.style.zIndex=3; from.style.zIndex=2;
+    cur=n; update();
+    function finish(){
+      from.classList.remove('on'); from.inert=true; from.setAttribute('aria-hidden','true');
+      from.style.zIndex=''; to.style.zIndex=''; busy=false;
+    }
+    if(reduce||!to.animate){finish();return;}
+    busy=true;
+    var a=to.animate(
+      [{clipPath:dir>0?'inset(0 0 0 100%)':'inset(0 100% 0 0)'},{clipPath:'inset(0 0 0 0)'}],
+      {duration:760,easing:'cubic-bezier(.77,0,.18,1)'});
+    a.onfinish=finish; a.oncancel=finish;
+    reveal(to);
+  }
+  function next(){show(cur+1);}
+  function prev(){show(cur-1);}
+  prevB.addEventListener('click',prev);
+  nextB.addEventListener('click',next);
+  [].forEach.call(document.querySelectorAll('[data-next]'),function(b){b.addEventListener('click',next);});
+  [].forEach.call(document.querySelectorAll('[data-goto]'),function(b){b.addEventListener('click',function(){show(parseInt(b.getAttribute('data-goto'),10));});});
+
+  /* índice */
+  function openIndex(){idx.hidden=false;var c=cards[cur];if(c)c.focus();}
+  function closeIndex(refocus){idx.hidden=true;if(refocus!==false)idxBtn.focus();}
+  idxBtn.addEventListener('click',openIndex);
+  document.getElementById('idx-close').addEventListener('click',function(){closeIndex(true);});
+
+  /* tela cheia */
+  var fullBtn=document.getElementById('btn-full');
+  if(document.fullscreenEnabled){
+    fullBtn.hidden=false;
+    fullBtn.addEventListener('click',function(){
+      try{
+        if(document.fullscreenElement){document.exitFullscreen();}
+        else{var p=document.documentElement.requestFullscreen();if(p&&p.catch)p.catch(function(){});}
+      }catch(e){}
+    });
+    document.addEventListener('fullscreenchange',function(){fullBtn.textContent=document.fullscreenElement?'Sair da tela cheia':'Tela cheia';});
+  }
+
+  /* teclado */
+  document.addEventListener('keydown',function(e){
+    if(e.metaKey||e.ctrlKey||e.altKey) return;
+    var k=e.key, tag=(e.target&&e.target.tagName)||'';
+    if(!idx.hidden){ if(k==='Escape'){e.preventDefault();closeIndex(true);} return; }
+    if(k==='ArrowRight'||k==='PageDown'){e.preventDefault();next();}
+    else if(k==='ArrowLeft'||k==='PageUp'){e.preventDefault();prev();}
+    else if(k===' '&&tag!=='BUTTON'&&tag!=='A'){e.preventDefault();e.shiftKey?prev():next();}
+    else if(k==='Home'){e.preventDefault();show(0);}
+    else if(k==='End'){e.preventDefault();show(total-1);}
+    else if(k==='m'||k==='M'){openIndex();}
+    else if((k==='f'||k==='F')&&!fullBtn.hidden){fullBtn.click();}
+  });
+
+  /* toque */
+  var sx=0,sy=0;
+  var deck=document.getElementById('deck');
+  deck.addEventListener('touchstart',function(e){var t=e.changedTouches[0];sx=t.clientX;sy=t.clientY;},{passive:true});
+  deck.addEventListener('touchend',function(e){
+    var t=e.changedTouches[0],dx=t.clientX-sx,dy=t.clientY-sy;
+    if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.6){dx<0?next():prev();}
+  },{passive:true});
+
+  /* acordeões */
+  [].forEach.call(document.querySelectorAll('[data-acc]'),function(acc){
+    var rows=[].slice.call(acc.querySelectorAll('.acc-row'));
+    rows.forEach(function(row){
+      var head=row.querySelector('.acc-head');
+      head.addEventListener('click',function(){
+        var wasOpen=row.hasAttribute('data-open');
+        rows.forEach(function(r){r.removeAttribute('data-open');r.querySelector('.acc-head').setAttribute('aria-expanded','false');});
+        if(!wasOpen){row.setAttribute('data-open','');head.setAttribute('aria-expanded','true');}
+      });
+    });
+  });
+
+  /* grupos de escolha com painel */
+  [].forEach.call(document.querySelectorAll('[data-choice]'),function(group){
+    var key=group.getAttribute('data-choice');
+    var picks=[].slice.call(group.querySelectorAll('[data-to]'));
+    var panels=[].slice.call(document.querySelectorAll('[data-for="'+key+'"]'));
+    function select(id,animate){
+      picks.forEach(function(p){
+        var on=p.getAttribute('data-to')===id;
+        p.setAttribute('aria-pressed',on?'true':'false');
+        p.classList.toggle('is-on',on);
+      });
+      panels.forEach(function(pn){
+        var ids=(pn.getAttribute('data-id')||'').split(' ');
+        var show=ids.indexOf(id)>-1, was=!pn.hidden;
+        pn.hidden=!show;
+        if(show&&!was&&animate&&pn.animate&&!reduce){
+          pn.animate([{opacity:0,transform:'translateY(12px)'},{opacity:1,transform:'none'}],{duration:380,easing:'ease-out'});
+        }
+      });
+      var i=picks.map(function(p){return p.getAttribute('data-to');}).indexOf(id);
+      var ev;
+      try{ev=new CustomEvent('choice',{detail:{id:id,index:i}});}catch(e){ev=null;}
+      if(ev)group.dispatchEvent(ev);
+    }
+    group.__select=select;
+    picks.forEach(function(p){p.addEventListener('click',function(){select(p.getAttribute('data-to'),true);});});
+    select(picks[0].getAttribute('data-to'),false);
+  });
+
+  /* jornada: linha de progresso e reprodução */
+  var jsteps=document.getElementById('jsteps'), jfill=document.getElementById('jfill');
+  var jplay=document.getElementById('jplay'), jtxt=document.getElementById('jplaytxt');
+  var jtimer=null;
+  function paintJourney(i){
+    var els=jsteps.querySelectorAll('.step');
+    jfill.style.width=((i+1)/els.length*100)+'%';
+    [].forEach.call(els,function(el,k){el.classList.toggle('done',k<i);});
+  }
+  jsteps.addEventListener('choice',function(e){paintJourney(e.detail.index);});
+  jsteps.addEventListener('click',function(e){if(e.isTrusted&&jtimer)stopJourney();});
+  function stopJourney(){
+    if(jtimer){clearInterval(jtimer);jtimer=null;}
+    jplay.setAttribute('aria-pressed','false'); jtxt.textContent='Reproduzir jornada';
+  }
+  jplay.addEventListener('click',function(){
+    if(jtimer){stopJourney();return;}
+    jplay.setAttribute('aria-pressed','true'); jtxt.textContent='Pausar';
+    var ids=['a','b','c','d'], k=0;
+    jsteps.__select(ids[0],true);
+    jtimer=setInterval(function(){
+      k++;
+      if(k>=ids.length){stopJourney();return;}
+      jsteps.__select(ids[k],true);
+    },2200);
+  });
+
+  update();
 })();
 </script>
+
 </body>
 </html>
